@@ -1,9 +1,19 @@
+using DotNetEnv;
+
+Env.Load();
+
 var builder = WebApplication.CreateBuilder(args);
+var passwordFromEnvironment = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection__Password");
+
+builder.Configuration
+    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json")
+    .AddEnvironmentVariables();
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
-
-var app = builder.Build();
 
 builder.Services.AddCors(options =>
 {
@@ -14,6 +24,8 @@ builder.Services.AddCors(options =>
             .AllowAnyMethod();
     });
 });
+
+var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
