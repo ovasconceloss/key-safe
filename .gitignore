@@ -2,6 +2,9 @@ bin/
 obj/
 publish/
 
+.env
+.env.local
+
 *.suo
 *.user
 *.userosscache
